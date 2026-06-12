@@ -31,3 +31,50 @@ void inicializar_tabela() {
         tabela[i] = NULL;
     }
 }
+void inserir(char *palavra, char *definicao) {
+    int indice = funcao_hash(palavra);
+
+    No *aux = tabela[indice];
+    while (aux != NULL) {
+        if (strcmp(aux->palavra, palavra) == 0) {
+            printf("\n[!] Palavra '%s' ja existe! Atualizando definicao...\n", palavra);
+            strcpy(aux->definicao, definicao);
+            return;
+        }
+        aux = aux->proximo;
+    }
+
+    No *novo = (No*) malloc(sizeof(No));
+    if (novo == NULL) {
+        printf("\n[ERRO] Falha ao alocar memoria!\n");
+        return;
+    }
+
+    strcpy(novo->palavra, palavra);
+    strcpy(novo->definicao, definicao);
+    novo->proximo = tabela[indice];
+    tabela[indice] = novo;
+
+    total_elementos++;
+    printf("\n[OK] Palavra '%s' inserida no indice %d!\n", palavra, indice);
+}
+
+void buscar(char *palavra) {
+    int indice = funcao_hash(palavra);
+    No *aux = tabela[indice];
+
+    printf("\n[Busca] Procurando '%s' no indice %d...\n", palavra, indice);
+
+    while (aux != NULL) {
+        if (strcmp(aux->palavra, palavra) == 0) {
+            printf("----------------------------------\n");
+            printf("Palavra   : %s\n", aux->palavra);
+            printf("Definicao : %s\n", aux->definicao);
+            printf("----------------------------------\n");
+            return;
+        }
+        aux = aux->proximo;
+    }
+
+    printf("[!] Palavra '%s' nao encontrada!\n", palavra);
+}
