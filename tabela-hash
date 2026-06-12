@@ -167,3 +167,100 @@ void exibir_estatisticas() {
     printf("Maior lista encadeada : %d elemento(s)\n", maior_lista);
     printf("==================================\n");
 }
+void liberar_tabela() {
+    int i;
+    for (i = 0; i < TAMANHO_TABELA; i++) {
+        No *atual = tabela[i];
+        while (atual != NULL) {
+            No *proximo = atual->proximo;
+            free(atual);
+            atual = proximo;
+        }
+        tabela[i] = NULL;
+    }
+}
+
+void limpar_buffer() {
+    int c;
+    while ((c = getchar()) != '\n' && c != EOF);
+}
+
+int main() {
+    int opcao;
+    char palavra[MAX_PALAVRA];
+    char definicao[MAX_DEFINICAO];
+
+    inicializar_tabela();
+
+    printf("=========================================\n");
+    printf("  DICIONARIO COM TABELA HASH EM C\n");
+    printf("  Trabalho de Estrutura de Dados\n");
+    printf("=========================================\n");
+
+    do {
+        printf("\n---------- MENU ----------\n");
+        printf("1 - Inserir palavra\n");
+        printf("2 - Buscar palavra\n");
+        printf("3 - Remover palavra\n");
+        printf("4 - Mostrar tabela\n");
+        printf("5 - Mostrar estatisticas\n");
+        printf("0 - Sair\n");
+        printf("--------------------------\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &opcao);
+        limpar_buffer();
+
+        switch (opcao) {
+
+            case 1:
+                printf("\nDigite a palavra: ");
+                fgets(palavra, MAX_PALAVRA, stdin);
+                palavra[strcspn(palavra, "\n")] = '\0';
+
+                printf("Digite a definicao: ");
+                fgets(definicao, MAX_DEFINICAO, stdin);
+                definicao[strcspn(definicao, "\n")] = '\0';
+
+                inserir(palavra, definicao);
+                break;
+
+            case 2:
+                printf("\nDigite a palavra a buscar: ");
+                fgets(palavra, MAX_PALAVRA, stdin);
+                palavra[strcspn(palavra, "\n")] = '\0';
+
+                buscar(palavra);
+                break;
+
+            case 3:
+                printf("\nDigite a palavra a remover: ");
+                fgets(palavra, MAX_PALAVRA, stdin);
+                palavra[strcspn(palavra, "\n")] = '\0';
+
+                remover(palavra);
+                break;
+
+            case 4:
+                exibir_tabela();
+                break;
+
+            case 5:
+                exibir_estatisticas();
+                break;
+
+            case 0:
+                printf("\nEncerrando programa...\n");
+                break;
+
+            default:
+                printf("\n[!] Opcao invalida! Tente novamente.\n");
+                break;
+        }
+
+    } while (opcao != 0);
+
+    liberar_tabela();
+
+    printf("Memoria liberada. Ate logo!\n");
+    return 0;
+}
