@@ -1,0 +1,33 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define TAMANHO_TABELA 10
+#define MAX_PALAVRA 100
+#define MAX_DEFINICAO 300
+
+typedef struct No {
+    char palavra[MAX_PALAVRA];
+    char definicao[MAX_DEFINICAO];
+    struct No *proximo;
+} No;
+
+No *tabela[TAMANHO_TABELA];
+int total_elementos = 0;
+
+int funcao_hash(char *palavra) {
+    int soma = 0;
+    int i = 0;
+    while (palavra[i] != '\0') {
+        soma = soma + palavra[i];
+        i++;
+    }
+    return soma % TAMANHO_TABELA;
+}
+
+void inicializar_tabela() {
+    int i;
+    for (i = 0; i < TAMANHO_TABELA; i++) {
+        tabela[i] = NULL;
+    }
+}
