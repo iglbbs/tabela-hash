@@ -78,3 +78,92 @@ void buscar(char *palavra) {
 
     printf("[!] Palavra '%s' nao encontrada!\n", palavra);
 }
+
+void remover(char *palavra) {
+    int indice = funcao_hash(palavra);
+    No *atual = tabela[indice];
+    No *anterior = NULL;
+
+    while (atual != NULL) {
+        if (strcmp(atual->palavra, palavra) == 0) {
+            if (anterior == NULL) {
+                tabela[indice] = atual->proximo;
+            } else {
+                anterior->proximo = atual->proximo;
+            }
+            free(atual);
+            total_elementos--;
+            printf("\n[OK] Palavra '%s' removida com sucesso!\n", palavra);
+            return;
+        }
+        anterior = atual;
+        atual = atual->proximo;
+    }
+
+    printf("\n[!] Palavra '%s' nao encontrada para remover!\n", palavra);
+}
+
+void exibir_tabela() {
+    int i;
+    printf("\n========== TABELA HASH ==========\n");
+
+    for (i = 0; i < TAMANHO_TABELA; i++) {
+        printf("Indice [%2d]: ", i);
+
+        if (tabela[i] == NULL) {
+            printf("(vazio)\n");
+        } else {
+            No *aux = tabela[i];
+            while (aux != NULL) {
+                printf("[%s] ", aux->palavra);
+                if (aux->proximo != NULL) {
+                    printf(" -> ");
+                }
+                aux = aux->proximo;
+            }
+            printf("\n");
+        }
+    }
+
+    printf("=================================\n");
+}
+
+void exibir_estatisticas() {
+    int i;
+    int colisoes = 0;
+    int maior_lista = 0;
+    int posicoes_usadas = 0;
+
+    for (i = 0; i < TAMANHO_TABELA; i++) {
+        if (tabela[i] != NULL) {
+            posicoes_usadas++;
+
+            int tamanho_lista = 0;
+            No *aux = tabela[i];
+            while (aux != NULL) {
+                tamanho_lista++;
+                aux = aux->proximo;
+            }
+
+            if (tamanho_lista > 1) {
+                colisoes += tamanho_lista - 1;
+            }
+
+            if (tamanho_lista > maior_lista) {
+                maior_lista = tamanho_lista;
+            }
+        }
+    }
+
+    float fator_carga = (float) total_elementos / TAMANHO_TABELA;
+
+    printf("\n========== ESTATISTICAS ==========\n");
+    printf("Tamanho da tabela     : %d\n", TAMANHO_TABELA);
+    printf("Total de elementos    : %d\n", total_elementos);
+    printf("Posicoes usadas       : %d\n", posicoes_usadas);
+    printf("Posicoes vazias       : %d\n", TAMANHO_TABELA - posicoes_usadas);
+    printf("Colisoes              : %d\n", colisoes);
+    printf("Fator de carga        : %.2f\n", fator_carga);
+    printf("Maior lista encadeada : %d elemento(s)\n", maior_lista);
+    printf("==================================\n");
+}
